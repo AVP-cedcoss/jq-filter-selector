@@ -95,33 +95,61 @@ function displayFilters()
 		</div>";
 }
 
-//Filter by Brand DropDown Button
-$(document).ready(function () 
+//Filter Drop Down Button
+var check = 0;
+//0 None
+//1 Brand
+//2 OS
+
+$(document).ready(function()
 {
+	//on Click Brand Drop Down
 	$(document).on("click", "#brandButton",function()
 	{
-		if($("#brandList").css("display")=="block"){
-			$("#brandList").css("display","none");
-		}
-		else{
-			$("#brandList").css("display","block");
-		}
+		check = 1;
+		dropDownCheck();
+		check = 0;
+	});
+
+	//on Click OS Drop Down
+	$(document).on("click", "#osButton",function()
+	{
+		check = 2;
+		dropDownCheck();
+	});
+
+	$("#search").on("click", function()
+	{
+		check = 0;
+		dropDownCheck();
+	});
+
+	$("#wrapper").on('click', function()
+	{
+		check = 0;
+		dropDownCheck();
 	});
 });
 
-//Filter by Operating System DropDown Button
-$(document).ready(function () 
+//To check Drop Down
+function dropDownCheck()
 {
-	$(document).on("click", "#osButton",function()
+	if (check == 0)
 	{
-		if($("#osList").css("display")=="block"){
-			$("#osList").css("display","none");
-		}
-		else{
-			$("#osList").css("display","block");
-		}
-	});
-});
+		$("#brandList").css("display","none");
+		$("#osList").css("display","none");
+	}
+	else if (check == 1)
+	{
+		$("#brandList").css("display","block");
+		$("#osList").css("display","none");
+	}
+	else if (check == 2)
+	{
+		$("#brandList").css("display","none");
+		$("#osList").css("display","block");
+	}
+}
 
 //Remove Filters
 $(document).on("click", "#removeFilter", function () 
@@ -130,8 +158,6 @@ $(document).on("click", "#removeFilter", function ()
 	osSelected = "";
 	displayFilters();
 	displayTable();
-	$("#brandButton").html("Brands");
-	$("#osButton").html("Operating System");
 });
 
 //To display the Content of Product Array
@@ -152,7 +178,7 @@ function displayTable()
 	//Traversing the Object Array and creating the rows
 	for (let i = 0; i < products.length; i++) 
 	{
-		if (osSelected != "" && brandSelected != "")
+		if (osSelected != "" && brandSelected != "")	//Brand & OS Filter Both are Selected
 		{
 			if (products[i].os == osSelected && products[i].brand == brandSelected)
 			{
@@ -160,7 +186,7 @@ function displayTable()
 			}
 		}
 
-		else if (osSelected != "")
+		else if (osSelected != "")	//Only OS Filter
 		{
 			if (products[i].os == osSelected)
 			{
@@ -168,7 +194,7 @@ function displayTable()
 			}
 		}
 
-		else if (brandSelected != "")
+		else if (brandSelected != "")	//Only Brand Filter
 		{
 			if (products[i].brand == brandSelected)
 			{
@@ -176,7 +202,7 @@ function displayTable()
 			}
 		}
 
-		else
+		else	//No Filter Selected
 		{
 			tablePrint(i);
 		}
@@ -211,9 +237,8 @@ function tablePrint(i)
 			<td>" +
 		products[i].os +
 		"</td>\
-			<td style='font-size:20px' class='fa'><a href='#' onclick='hideRow(" +
-		products[i].id +
-		")'>&#xf00d;</a></td>\
+			<td style='font-size:20px' class='fa'><a href='#' class='hide-Row' data-id="+products[i].id+">&#xf00d;</a>\
+			</td>\
 	  </tr>";
 }
 
@@ -240,15 +265,18 @@ $(document).ready(function ()
 });
 
 //To hide row on selection.
-function hideRow(id) {
-  $("." + id + "." + id).hide();
-}
+$("#wrapper").on('click', ".hide-Row", function()
+{
+	$("." + $(this).data("id")).hide();
+});
 
-//To Show row on selection
-function showRow(id) {
-  $("." + id + "." + id).show();
-}
+// //To Show row on selection
+// $("#wrapper").on('click', ".hide-Row", function()
+// {
+// 	$("." + $(this).data("id")).show();
+// });
 
+//Search Box
 $(document).ready(function(){
 	$("#search").on("keyup", function()
 	{
@@ -260,6 +288,7 @@ $(document).ready(function(){
 	});
 });
 
+//OS DropDown Filter
 $(document).ready(function(){
 	$("#filterOS").on("keyup", function()
 	{
@@ -271,6 +300,7 @@ $(document).ready(function(){
 	});
 });
 
+//Brand DropDown Filter
 $(document).ready(function(){
 	$("#filterbrand").on("keyup", function()
 	{
